@@ -21,7 +21,7 @@ class Generator:
         self.ramp_10 = ramp_10
         self.ramp_30 = ramp_30
         self.ramp_q = ramp_q
-        self.apf = self.apf
+        self.apf = apf
 
     def get_count(self):
         return len(self.bus)

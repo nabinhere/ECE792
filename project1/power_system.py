@@ -1,6 +1,9 @@
 import pandas as pd
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import json
+from bus import Bus
+from generator import Generator
+from branch import Branch
 
 def read_from_excel(path: str)->dict:
     """
@@ -103,6 +106,13 @@ def print_data(data: dict)->None:
     print("\nBranch Data:")
     print(branch_df.head())
 
+def column_to_obj(df, cls):
+    obj_dict = {}
+    for col in df.columns:
+        obj_dict[col] = df[col].tolist()
+    return cls(**obj_dict)
+
+
 if __name__ == "__main__":
     # read power system data from an excel file
     data = read_from_excel("case14.xslx")
@@ -114,3 +124,16 @@ if __name__ == "__main__":
     # load data from a json file
     data = load_data_from_json("power_system_data.json")
     print_data(data)
+
+    bus = column_to_obj(data['bus'], Bus)
+    branch = column_to_obj(data['branch'], Branch)
+    generator = column_to_obj(data['gen'], Generator)
+
+    # verification code
+    print(bus.Vm[0])
+    print(branch.angmax[0])
+    print(generator.Pmax[0])
+
+
+
+

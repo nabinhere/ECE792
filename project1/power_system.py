@@ -21,13 +21,13 @@ def read_from_excel(path: str)->dict:
         - branch: DataFrame
             contains branch data
     """
-    file_dict = pd.read_excel("case14.xlsx", sheet_name = ['bus', 'branch', 'gen'], 
-                         header = 0, )
+    file_dict = pd.read_excel("case14.xlsx", sheet_name = None, 
+                         header = 0)
     return file_dict
+
 
 if __name__ == "__main__":
     data = read_from_excel("case14.xslx")
-    print(data)
 
     # Access individual DataFrames
     bus_df = data['bus']
@@ -41,4 +41,3 @@ if __name__ == "__main__":
     print(gen_df.head())
     print("\nBranch Data:")
     print(branch_df.head())
-    print(f"\n Type of branch df: {type(branch_df)}")

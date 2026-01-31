@@ -46,10 +46,49 @@ def save_to_json(data: dict, path: str)->None:
     with open(path, 'w') as json_file:
         json_file.write(json.dumps(data_dict))
 
+def load_data_from_json(file_path: str) -> dict:
+    """
+    Load data from json file and convert into a dictionary of dataframes
+    
+    Parameters
+    -----------
+    file_path: str
+        relative path to the json file
+    
+    Return
+    ----------
+    dict
+        Dictionary containing three pandas DataFrames
+        -bus: Dataframe
+            cotains bus data
+        -gen: DataFrame
+            contains bus data
+        - branch: DataFrame
+            contains branch data
+    """
+    data_dict = {}
+    with open(file_path, "r") as json_file:
+        data = json.load(json_file)
+        for key in data.keys():
+            data_dict[key] = pd.DataFrame(data[key])
+    
+    return data_dict
 
+def print_data(data: dict)->None:
+    """
+    Print Power system data
 
-if __name__ == "__main__":
-    data = read_from_excel("case14.xslx")
+    Parameters
+    ------------
+    data: dict
+        Dictionary containing three pandas DataFrames
+        -bus: Dataframe
+            cotains bus data
+        -gen: DataFrame
+            contains bus data
+        - branch: DataFrame
+            contains branch data
+    """
 
     # Access individual DataFrames
     bus_df = data['bus']
@@ -64,5 +103,14 @@ if __name__ == "__main__":
     print("\nBranch Data:")
     print(branch_df.head())
 
+if __name__ == "__main__":
+    # read power system data from an excel file
+    data = read_from_excel("case14.xslx")
+    print_data(data)
+
     # Save data to a json file
     save_to_json(data = data, path = "power_system_data.json")
+
+    # load data from a json file
+    data = load_data_from_json("power_system_data.json")
+    print_data(data)

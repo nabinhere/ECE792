@@ -107,13 +107,35 @@ def print_data(data: dict)->None:
     print("\nBranch Data:")
     print(branch_df.head())
 
-def column_to_obj(df, cls):
+def column_to_obj(df:pd.DataFrame, cls:object)->object:
+    """
+    Convert DataFrames into objects
+
+    Parameters
+    --------------
+    df: pd.DataFrame
+        pandas DataFrame containing the power system component information
+    cls: 
+        class   
+
+    Returns
+    -----------
+    an instance of the cls with parameters unpacked from df
+    """
     obj_dict = {}
     for col in df.columns:
         obj_dict[col] = df[col].tolist()
     return cls(**obj_dict)
 
 def plot_bus_voltage(bus: object)->None:
+    """
+    Plot bus voltage using matplotlib.pyplot
+
+    Parameter
+    -------------
+    bus: object
+        an instalce of the Bus class
+    """
     plt.figure(figsize=(10, 6))
     plt.plot(bus.bus_i, bus.Vm, 'b-o', label = 'Voltage Magnitude')
     plt.xlabel('Bus Number')
@@ -128,6 +150,14 @@ def plot_bus_voltage(bus: object)->None:
     plt.show()
 
 def interactive_plot(bus: object):
+    """
+    Create Interactive plot using plotly.graph_objects
+
+    Parameter
+    ------------
+    bus: object
+        as instance of the Bus class
+    """
     fig = go.Figure()
 
     fig.add_trace(go.Scatter(x=bus.bus_i, y=bus.Vm, name="Voltage Magnitude"))
@@ -163,7 +193,7 @@ if __name__ == "__main__":
     print(branch.angmax[0])
     print(generator.Pmax[0])
 
-    # plot bus voltage
+    # plot bus voltage -- uncomment
     # plot_bus_voltage(bus)
 
     # Plot with subplots
@@ -192,10 +222,5 @@ if __name__ == "__main__":
 
     # plt.show()
 
+    # create an HTML based interactive plot
     interactive_plot(bus)
-
-
-
-
-
-

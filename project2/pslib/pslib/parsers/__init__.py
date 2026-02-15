@@ -1,6 +1,13 @@
 import pandas as pd
-from . import excel
+from .excel import read_from_excel
 from . import json
+from pslib.system import PowerSystem
+from pslib.models.bus import Bus
+from pslib.models.branch import Branch
+from pslib.models.generator import Generator
+
+
+__all__ = ['excel']
 
 def column_to_obj(df:pd.DataFrame, cls:object)->object:
     """
@@ -21,3 +28,34 @@ def column_to_obj(df:pd.DataFrame, cls:object)->object:
     for col in df.columns:
         obj_dict[col] = df[col].tolist()
     return cls(**obj_dict)
+
+
+name_to_class = {
+    'bus': Bus,
+    'branch': Branch,
+    'gen': Generator
+}
+
+
+def create_system_from_data(data: dict) -> PowerSystem:
+    """
+    Convert raw data dict to PowerSystem object.
+
+    Parameters
+    ------------
+    data: dict
+        Dictionary of Dataframes from read_from_excel()
+
+    Returns
+    ----------
+    PowerSystem
+        Initialized system object with vectorized components
+    """
+    system = PowerSystem()
+
+    model_objects = {}
+    for key, cls in name_to_class.items():
+        model_objects[key]=  column_to_obj(data[key], cls)
+        
+    return PowerSystem(**model_objects)
+     

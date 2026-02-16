@@ -51,7 +51,7 @@ def create_system_from_data(data: dict) -> PowerSystem:
     PowerSystem
         Initialized system object with vectorized components
     """
-    system = PowerSystem()
+    system = PowerSystem(data['bus'], data['branch'], data['gen'])
 
     model_objects = {}
     for key, cls in name_to_class.items():

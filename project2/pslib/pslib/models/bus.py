@@ -1,5 +1,4 @@
 import numpy as np
-from pslib.parsers import create_system_from_data
 from pslib.parsers.excel import read_from_excel
 
 class Bus:
@@ -11,6 +10,7 @@ class Bus:
         self.Qd = Qd
         self.Gs = Gs
         self.Bs = Bs
+        self.area = area
         self.Vm = Vm
         self.Va = Va
         self.baseKV = baseKV
@@ -19,6 +19,7 @@ class Bus:
         self.Vmin = Vmin
 
         self._int_map = {}
+        self.ext_numbers = bus_i
     
     def get_count(self):
         return len(self.bus_i)
@@ -27,6 +28,7 @@ class Bus:
         """
         Convert an array of external bus numbers to internal bus numbers.
         """
+        self.ext_numbers = ext_numbers
         return np.vectorize(self._int_map.get)(ext_numbers)
     
     def make_int_map(self):

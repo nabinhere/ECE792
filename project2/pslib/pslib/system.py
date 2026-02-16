@@ -9,8 +9,8 @@ class PowerSystem:
         fbus = self.bus.ext2int(self.branch.fbus)
         tbus = self.bus.ext2int(self.branch.tbus)
         # convert to numpy arrays to enable vectorized operation
-        fbus = np.array(fbus)
-        tbus = np.array(tbus)
+        # fbus = np.array(fbus)
+        # tbus = np.array(tbus)
         r = np.array(self.branch.r)
         x = np.array(self.branch.x)
         b = np.array(self.branch.b)

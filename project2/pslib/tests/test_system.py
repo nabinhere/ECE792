@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 from pslib.system import PowerSystem
 from pslib.parsers.excel import read_from_excel
-from pslib.parsers import create_system_from_data
+from pslib.parsers import create_system_from_file, create_system_from_data
 
 @pytest.fixture
 def sample_system():
@@ -33,4 +33,11 @@ def test_ybus_creation(sample_system):
 
     # additional sanity checks
     assert  ybus.shape == (3,3), "Ybus should be 3x3 for 3-bus system"
+
+    # Test entire admittance matrix
+    ref_ybus = np.array([[ 1.21133795-13.09457417j, -0.22123894 +3.31858407j, -0.99009901 +9.9009901j ],
+                    [-0.22123894 +3.31858407j,  1.21133795-13.09457417j, -0.99009901 +9.9009901j ],
+                    [-0.99009901 +9.9009901j,  -0.99009901 +9.9009901j, 1.98019802-19.7019802j ]], dtype=complex)
+    
+    np.testing.assert_array_almost_equal(ybus, ref_ybus, decimal=3)
 

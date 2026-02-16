@@ -1,4 +1,5 @@
 import numpy as np
+
 class PowerSystem:
     def __init__(self, bus, branch, gen):
         self.bus = bus
@@ -8,9 +9,8 @@ class PowerSystem:
     def makeYbus(self):
         fbus = self.bus.ext2int(self.branch.fbus)
         tbus = self.bus.ext2int(self.branch.tbus)
+        
         # convert to numpy arrays to enable vectorized operation
-        # fbus = np.array(fbus)
-        # tbus = np.array(tbus)
         r = np.array(self.branch.r)
         x = np.array(self.branch.x)
         b = np.array(self.branch.b)

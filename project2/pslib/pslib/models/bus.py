@@ -1,5 +1,4 @@
 import numpy as np
-from pslib.parsers.excel import read_from_excel
 
 class Bus:
     def __init__(self, bus_i, type, Pd, Qd, Gs, Bs,

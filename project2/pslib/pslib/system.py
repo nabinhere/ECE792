@@ -9,7 +9,7 @@ class PowerSystem:
     def makeYbus(self):
         fbus = self.bus.ext2int(self.branch.fbus)
         tbus = self.bus.ext2int(self.branch.tbus)
-        
+
         # convert to numpy arrays to enable vectorized operation
         r = np.array(self.branch.r)
         x = np.array(self.branch.x)

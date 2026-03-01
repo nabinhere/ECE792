@@ -48,10 +48,9 @@ class Bus:
         """
 
         dae.register_eqn("Bus", "Algeb", 
-                         {"P": self.get_count(),
-                          "Q": self.get_count()}, self._int_map.values())
+                         {"P_balance": self.get_count(),
+                          "Q_balance": self.get_count()}, self._int_map.values())
         
-        dae.register_eqn("Bus", "Algeb", self._int_map.values)
     
     def fetch_equation_address(self, dae, system):
         bus_int = system.bus.ext2int(self.bus_i)

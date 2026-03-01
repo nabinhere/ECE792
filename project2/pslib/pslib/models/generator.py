@@ -23,5 +23,24 @@ class Generator:
         self.ramp_q = ramp_q
         self.apf = apf
 
+        self.eqn_address = {}
+        self.residuals = {}
+
     def get_count(self):
         return len(self.bus)
+    
+    def register_eqn(self, dae):
+        pass
+    
+    def fetch_eqn_address(self, dae, system):
+        # get the internal bus number of the generator
+        bus_int = system.bus.ext2int(self.bus)
+        # get the P_balance and Q_balance equation addresses
+        P_address = dae.get_eqn_address("Bus", "Algeb", "P_balance", bus_int)
+        Q_address = dae.get_eqn_address("Bus", "Algeb", "Q_balance", bus_int)
+        self.eqn_address = {"P_balance": P_address,
+                            "Q_balance": Q_address}
+        
+    def residual(self, x):
+        self.eqn_residuals = {"P_balance": self.Pg,
+                              "Q_balance": self.Qg}

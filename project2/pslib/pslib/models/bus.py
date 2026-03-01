@@ -39,3 +39,23 @@ class Bus:
         self._int_map = {}
         for i, ext_number in enumerate(self.ext_numbers):
             self._int_map[ext_number] = i
+
+    def register_equations(self, dae):
+        """
+        Register Algebraic and Differential equations for the buses
+        """
+
+        dae.register_eqn("Bus", "Algeb", 
+                         {"P": self.get_count(),
+                          "Q": self.get_count()}, self._int_map.values())
+        
+        dae.register_eqn("Bus", "Algeb", self._int_map.values)
+    
+    def fetch_equation_address(self, dae, system):
+        bus_int = system.bus.ext2int(self.bus_i)
+        # get the P_balance and Q_balance equation addresses
+        P_address = dae.get_eqn_address("Bus", "Algeb", "P_balance", bus_int)
+        Q_address = dae.get_eqn_address("Bus", "Algeb", "Q_balance", bus_int)
+
+        self.eqn_address = {"P_balance": P_address,
+                            "Q_balance": Q_address}

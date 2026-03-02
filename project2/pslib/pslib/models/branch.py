@@ -28,14 +28,15 @@ class Branch:
         """
         Fetch DAE equation addresses for the given system
         """
-        fbus_int = system.bus.ext2it(self.fbus)
+        fbus_int = system.bus.ext2int(self.fbus)
         tbus_int = system.bus.ext2int(self.tbus)
 
-        P_address_fbus  = dae.get_eqn_address("Branch", "Algeb", "P_balance", fbus_int)
-        P_address_tbus  = dae.get_eqn_address("Branch", "Algeb", "P_balance", tbus_int)
-        Q_address_fbus  = dae.get_eqn_address("Branch", "Algeb", "Q_balance", fbus_int)
-        Q_address_tbus  = dae.get_eqn_address("Branch", "Algeb", "Q_balance", tbus_int)
+        P_address_fbus  = dae.get_eqn_address("Bus", "Algeb", "P_balance", fbus_int)
+        P_address_tbus  = dae.get_eqn_address("Bus", "Algeb", "P_balance", tbus_int)
+        Q_address_tbus  = dae.get_eqn_address("Bus", "Algeb", "Q_balance", tbus_int)
+        Q_address_fbus  = dae.get_eqn_address("Bus", "Algeb", "Q_balance", fbus_int)
         self.eqn_address = {"P_balance_fbus": P_address_fbus,
                             "P_balance_tbus": P_address_tbus,
                             "Q_balance_fbus": Q_address_fbus,
                             "Q_balance_tbus": Q_address_tbus} 
+        return self.eqn_address

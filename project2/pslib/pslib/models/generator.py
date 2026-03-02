@@ -40,6 +40,7 @@ class Generator:
         Q_address = dae.get_eqn_address("Bus", "Algeb", "Q_balance", bus_int)
         self.eqn_address = {"P_balance": P_address,
                             "Q_balance": Q_address}
+        return self.eqn_address
         
     def residual(self, x):
         self.eqn_residuals = {"P_balance": self.Pg,

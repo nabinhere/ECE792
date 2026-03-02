@@ -9,30 +9,29 @@ class DAE:
         """
         register a specified type of equations for a given model 
         """
-        num_p_eqn = eqn_dict["P_balance"]   # number of P equations to be registered
-        num_q_eqn = eqn_dict["Q_balance"]   # number of Q equations to be registered
-        P_balance_dict = {}
-        Q_balance_dict = {}
+        # initialize a dictionary for a given model
+        if model_name not in self.eqn_address:
+            self.eqn_address[model_name] = {}
+        
+        # create a specified type of equation for a given model
+        if var_type not in self.eqn_address[model_name]:
+            self.eqn_address[model_name][var_type] = {}
 
-        P_balance_address = np.array(range(self.m, self.m+num_p_eqn))
-        Q_balance_address = np.array(range(self.m+num_p_eqn, self.m+num_p_eqn+num_q_eqn))
+        # Assign equation addresses
+        for eqn_name, num_eqn in eqn_dict.items():
+            if eqn_name not in self.eqn_address[model_name][var_type]:
+                self.eqn_address[model_name][var_type][eqn_name] = {}
+            
+            address_dict = {}
+            eqn_address = range(self.m, self.m+num_eqn)
+            self.m += num_eqn
+            for i, val in enumerate(bus_int):
+                address_dict[val] = eqn_address[i]
 
-        for i, val in enumerate(bus_int):
-            P_balance_dict[val] = P_balance_address[i]
-            Q_balance_dict[val] = Q_balance_address[i]
-
-        self.eqn_address.update({model_name:
-                                {var_type:
-                                        {"P_balance": P_balance_dict,
-                                        "Q_balance": Q_balance_dict
-                                        }
-                                    }})
-                                    
-        self.m += num_p_eqn + num_q_eqn     # update the next available equation address
+            self.eqn_address[model_name][var_type][eqn_name].update(address_dict)
 
 
-
-    def get_eqn_address(self, model_name: str, var_type: str, var_name: str, bus_no: int | np.ndarray)->np.ndarray:
+    def get_eqn_address(self, model_name: str, var_type: str, var_name: str, bus_no):
         """Get the address of the equation that is initially registered by 
         a given model using a model, variable type, variable name, bus numbers
         

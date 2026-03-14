@@ -59,7 +59,7 @@ class DAE:
             self.var_address[model_name][var_type][var_name].update(address_dict)
 
 
-    def get_eqn_address(self, model_name: str, var_type: str, eqn_name: str, bus_no):
+    def get_eqn_address(self, model_name: str, eqn_type: str, eqn_name: str, bus_no):
         """Get the address of the equation that is initially registered by 
         a given model using a model, variable type, variable name, bus numbers
         
@@ -83,6 +83,34 @@ class DAE:
         """
         eqn_address = []
         for val in bus_no:
-            eqn_address.append(self.eqn_address[model_name][var_type][eqn_name][val])
+            eqn_address.append(self.eqn_address[model_name][eqn_type][eqn_name][val])
 
         return eqn_address
+    
+    def get_var_address(self, model_name: str, var_type: str, var_name: str, bus_no):
+        """Get the address of the variable that is initially registered by 
+        a given model using a model, variable type, variable name, bus numbers
+        
+        Parameters
+        -----------
+        model_name: str
+            name of the power system model (e.g., "Bus")
+        
+        var_type: str
+            Type of variable. Can be either algebraic or differential
+
+        var_name: str
+            Name of the variable (e.g., "V3")
+        
+        bus_no: int or np.ndarray
+            internal bus number associated witht the given model
+
+        Returns
+        -----------
+        np.ndarray of addresses of var_name equation of type var_type affected by model model_name
+        """
+        var_address = []
+        for val in bus_no:
+            var_address.append(self.eqn_address[model_name][var_type][var_name][val])
+
+        return var_address

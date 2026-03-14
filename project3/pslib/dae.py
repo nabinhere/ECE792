@@ -7,110 +7,70 @@ class DAE:
         self.eqn_address = {}
         self.var_address = {}
 
-    def register_eqn(self, model_name: str, eqn_type: str, eqn_dict: dict, bus_int):
+        self.addresses = {}
+        self.next_addresses = {}
+
+
+    def register_address(self, model_name: str, type_name: str, var_dict: dict[str, int], bus_int: list)-> None:
         """
-        register a specified type of equations for a given model 
-        """
-        # initialize a dictionary for a given model
-        if model_name not in self.eqn_address:
-            self.eqn_address[model_name] = {}
-        
-        # create a specified type of equation for a given model
-        if eqn_type not in self.eqn_address[model_name]:
-            self.eqn_address[model_name][eqn_type] = {}
+        Register equation and variable addresses for a given model
 
-        # Assign equation addresses
-        for eqn_name, num_eqn in eqn_dict.items():
-            if eqn_name not in self.eqn_address[model_name][eqn_type]:
-                self.eqn_address[model_name][eqn_type][eqn_name] = {}
-            
-            address_dict = {}
-            eqn_address = range(self.m, self.m+num_eqn)
-            self.m += num_eqn
-            for i, val in enumerate(bus_int):
-                address_dict[val] = eqn_address[i]
-
-            self.eqn_address[model_name][eqn_type][eqn_name].update(address_dict)
-
-
-    def register_var(self, model_name: str, var_type: str, var_dict: dict, bus_int):
-        """
-        register a specified type of variable for a given model 
+        Parameters
+        --------------
+        model_name: str
+            Name of the model (e.g., Bus)
+        type_name: str
+            Full type name (e.g., "AlgebEqn", "StateVar", "Observed")
+        var_dict: dict
+            Dictionary variable names and their sizes
+        bus_int: list
+            internal bus numbersfor the given variables
         """
         # initialize a variable dictionary for a given model
-        if model_name not in self.var_address:
-            self.var_address[model_name] = {}
+        if model_name not in self.addresses:
+            self.addresses[model_name] = {}
         
         # create a specified type of variable for a given model
-        if var_type not in self.var_address[model_name]:
-            self.var_address[model_name][var_type] = {}
+        if type_name not in self.addresses[model_name]:
+            self.addresses[model_name][type_name] = {}
 
-        # Assign variable addresses
-        for var_name, num_var in var_dict.items():
-            if var_name not in self.var_address[model_name][var_type]:
-                self.var_address[model_name][var_type][var_name] = {}
+        # Initialize next_address for this type if it doesn't already exist
+        if type_name not in self.next_addresses:
+            self.next_addresses[type_name] = 0
+
+        # Assign variable/equation addresses
+        for name, size in var_dict.items():
+            if name not in self.addresses[model_name][type_name]:
+                self.addresses[model_name][type_name][name] = {}
             
+            # initialize the address dict to be assigned
             address_dict = {}
-            var_address = range(self.nvar, self.nvar+num_var)
-            self.m += num_var
+            address_range = range(self.next_addresses[type_name], self.next_addresses[type_name] + size)
+            self.next_addresses[type_name] += size
+
             for i, val in enumerate(bus_int):
-                address_dict[val] = var_address[i]
+                address_dict[val] = address_range[i]
+            
+            self.addresses[model_name][type_name][name].update(address_dict)
 
-            self.var_address[model_name][var_type][var_name].update(address_dict)
-
-
-    def get_eqn_address(self, model_name: str, eqn_type: str, eqn_name: str, bus_no):
-        """Get the address of the equation that is initially registered by 
-        a given model using a model, variable type, variable name, bus numbers
-        
-        Parameters
-        -----------
-        model_name: str
-            name of the power system model (e.g., "Bus")
-        
-        var_type: str
-            Type of variable. Can be either algebraic or differential
-
-        eqn_name: str
-            Name of the equation (e.g., "P")
-        
-        bus_no: int or np.ndarray
-            internal bus number associated witht the given model
-
-        Returns
-        -----------
-        np.ndarray of addresses of var_name equation of type var_type affected by model model_name
+    def get_address(self, model_name: str, type_name: str, name: str, bus_no):
         """
-        eqn_address = []
-        for val in bus_no:
-            eqn_address.append(self.eqn_address[model_name][eqn_type][eqn_name][val])
+        Get the address of a type (equation, variable, etc.)
 
-        return eqn_address
-    
-    def get_var_address(self, model_name: str, var_type: str, var_name: str, bus_no):
-        """Get the address of the variable that is initially registered by 
-        a given model using a model, variable type, variable name, bus numbers
-        
         Parameters
-        -----------
+        --------------
         model_name: str
-            name of the power system model (e.g., "Bus")
-        
-        var_type: str
-            Type of variable. Can be either algebraic or differential
-
-        var_name: str
-            Name of the variable (e.g., "V3")
-        
-        bus_no: int or np.ndarray
-            internal bus number associated witht the given model
-
-        Returns
-        -----------
-        np.ndarray of addresses of var_name equation of type var_type affected by model model_name
+            Name of the model (e.g., Bus)
+        type_name: str
+            Full type name (e.g., "AlgebEqn", "StateVar", "Observed")
+        var_dict: dict
+            Dictionary variable names and their sizes
+        bus_int: list
+            internal bus numbersfor the given variables
         """
+
         var_address = []
         for val in bus_no:
-            var_address.append(self.eqn_address[model_name][var_type][var_name][val])
+            var_address.append(self.addresses[model_name][type_name][name][val])
 
         return var_address

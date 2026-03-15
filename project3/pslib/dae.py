@@ -40,20 +40,12 @@ class DAE:
 
         # Assign variable/equation addresses
         for name, size in var_dict.items():
-            if name not in self.addresses[model_name][type_name]:
-                self.addresses[model_name][type_name][name] = {}
-            
-            # initialize the address dict to be assigned
-            address_dict = {}
-            address_range = range(self.next_addresses[type_name], self.next_addresses[type_name] + size)
-            self.next_addresses[type_name] += size
+                self.addresses[model_name][type_name][name] = np.arange(self.next_addresses[type_name],
+                                                                        self.next_addresses[type_name] + size)
+                self.next_addresses[type_name] += size
 
-            for i, val in enumerate(bus_int):
-                address_dict[val] = address_range[i]
-            
-            self.addresses[model_name][type_name][name].update(address_dict)
 
-    def get_address(self, model_name: str, type_name: str, name: str, bus_no):
+    def get_address(self, model_name: str, type_name: str, name: str, index: int | list[int] | range | np.ndarray = None):
         """
         Get the address of a type (equation, variable, etc.)
 
@@ -68,9 +60,16 @@ class DAE:
         bus_int: list
             internal bus numbersfor the given variables
         """
+        addr_array = self.addressesp[model_name][type_name][name]
 
-        var_address = []
-        for val in bus_no:
-            var_address.append(self.addresses[model_name][type_name][name][val])
-
-        return var_address
+        # return entire array address if index is not provided
+        if index is None:
+             return addr_array
+        
+        if isinstance(index, (int, np.integer)):
+             return addr_array[index]
+        
+        if isinstance(index, (list, range, np.ndarray)):
+             return addr_array[index]
+        
+        raise ValueError(f"Index must be integer, list, range, or numpy array. Got {type(index)}.")

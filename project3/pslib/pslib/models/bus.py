@@ -42,21 +42,49 @@ class Bus:
         for i, ext_number in enumerate(self.ext_numbers):
             self._int_map[ext_number] = i
 
-    def register_equations(self, dae):
+    def register_address(self, dae):
         """
-        Register Algebraic and Differential equations for the buses
+        Register variables and equations for the buses
         """
-
-        dae.register_eqn("Bus", "Algeb", 
+        # register equations
+        dae.register_address("Bus", "AlgebEqn", 
                          {"P_balance": self.get_count(),
-                          "Q_balance": self.get_count()}, self._int_map.values())
+                          "Q_balance": self.get_count(),
+                          "Vm_diff": self.type.count(3),
+                          "Va_diff": self.type.count(3)})
+        
+        # register variables
+        dae.register_address("Bus",
+                             "AlgebVar",
+                             {"Va": self.get_count(),
+                             "Vm": self.get_count(),
+                             "P_slack": self.bus_type.count(3),
+                             "Q_slack": self.bus_type.count(3)})
         
     
     def fetch_equation_address(self, dae, system):
         bus_int = system.bus.ext2int(self.bus_i)
         # get the P_balance and Q_balance equation addresses
-        P_address = dae.get_eqn_address("Bus", "Algeb", "P_balance", bus_int)
-        Q_address = dae.get_eqn_address("Bus", "Algeb", "Q_balance", bus_int)
+        P_address = dae.get_eqn_address("Bus", "AlgebEqn", "P_balance", bus_int)
+        Q_address = dae.get_eqn_address("Bus", "AlgebEqn", "Q_balance", bus_int)
 
         self.eqn_address = {"P_balance": P_address,
                             "Q_balance": Q_address}
+        
+    def fetch_address(self, dae, system):
+        # fetch variable and equation addresses for the buses
+
+        self.adresses = {
+            "AlgebEqn": {
+                "P_balance": dae.get_addresses("Bus", "AlgebEqn", "P_balance"),
+                "Q_balance": dae.get_addresses("Bus", "AlgebEqn", "Q_balance"),
+                "Vm_diff": dae.get_addresses("Bus", "AlgebEqn", "Vm_diff"),
+                "Va_diff": dae.get_addresses("Bus", "AlgebEqn", "Va_diff"),
+            },
+            "AlgebVar": {
+                "Va": dae.get_addresses("Bus", "AlgebVar", "Va"),
+                "Vm": dae.get_addresses("Bus", "AlgebVar", "Vm"),
+                "P_slack": dae.get_addresses("Bus", "AlgebVar", "P_slack"),
+                "Q_slack": dae.get_addresses("Bus", "AlgebVar", "Q_slack"),
+            },
+        }

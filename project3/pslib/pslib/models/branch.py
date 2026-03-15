@@ -21,22 +21,48 @@ class Branch:
     def get_count(self):
         return len(self.fbus)
     
-    def register_equations(self, dae):
+    def register_address(self, dae, system):
+        """
+        Register the equations for branches.
+
+        Branches use equations from the Bus model.
+        No new equations created by branches
+        """
         pass
     
     def fetch_eqn_address(self, dae, system):
         """
         Fetch DAE equation addresses for the given system
         """
-        fbus_int = system.bus.ext2int(self.fbus)
-        tbus_int = system.bus.ext2int(self.tbus)
+        # fbus_int = system.bus.ext2int(self.fbus)
+        # tbus_int = system.bus.ext2int(self.tbus)
 
-        P_address_fbus  = dae.get_eqn_address("Bus", "Algeb", "P_balance", fbus_int)
-        P_address_tbus  = dae.get_eqn_address("Bus", "Algeb", "P_balance", tbus_int)
-        Q_address_tbus  = dae.get_eqn_address("Bus", "Algeb", "Q_balance", tbus_int)
-        Q_address_fbus  = dae.get_eqn_address("Bus", "Algeb", "Q_balance", fbus_int)
-        self.eqn_address = {"P_balance_fbus": P_address_fbus,
-                            "P_balance_tbus": P_address_tbus,
-                            "Q_balance_fbus": Q_address_fbus,
-                            "Q_balance_tbus": Q_address_tbus} 
-        return self.eqn_address
+        # P_address_fbus  = dae.get_eqn_address("Bus", "Algeb", "P_balance", fbus_int)
+        # P_address_tbus  = dae.get_eqn_address("Bus", "Algeb", "P_balance", tbus_int)
+        # Q_address_tbus  = dae.get_eqn_address("Bus", "Algeb", "Q_balance", tbus_int)
+        # Q_address_fbus  = dae.get_eqn_address("Bus", "Algeb", "Q_balance", fbus_int)
+        # self.eqn_address = {"P_balance_fbus": P_address_fbus,
+        #                     "P_balance_tbus": P_address_tbus,
+        #                     "Q_balance_fbus": Q_address_fbus,
+        #                     "Q_balance_tbus": Q_address_tbus} 
+        # return self.eqn_address
+
+        bus_int = list(range(system.bus.get_count()))
+
+        P_addr = dae.get_address("Bus", "AlgebEqn", "P_balance", bus_int)
+        Q_addr = dae.get_address("Bus", "AlgebEqn", "Q_balance", bus_int)
+
+        self.eqn_address = {
+            "AlgebEqn": {
+                "P_balance": P_addr,
+                "Q_balance": Q_addr,
+            }
+        }
+
+        Va_addr = dae.get_address("Bus", "AlgebVar", "Va", bus_int)
+        Vm_addr = dae.get_address("Bus", "AlgebVar", "Vm", bus_int)
+
+        self.addresses.update({
+            "Algebvar": {"Va": Va_addr,
+                         "Vm": Vm_addr,}
+        })

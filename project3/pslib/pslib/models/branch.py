@@ -15,13 +15,13 @@ class Branch:
         self.angmin = angmin
         self.angmax=  angmax
 
-        self.eqn_address = {}
+        self.addresses = {}
         self.eqn_residuals = {}
         
     def get_count(self):
         return len(self.fbus)
     
-    def register_address(self, dae, system):
+    def register_address(self, dae):
         """
         Register the equations for branches.
 
@@ -30,7 +30,7 @@ class Branch:
         """
         pass
     
-    def fetch_eqn_address(self, dae, system):
+    def fetch_address(self, dae, system):
         """
         Fetch DAE equation addresses for the given system
         """

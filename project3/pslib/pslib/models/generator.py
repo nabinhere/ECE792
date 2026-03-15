@@ -23,13 +23,13 @@ class Generator:
         self.ramp_q = ramp_q
         self.apf = apf
 
-        self.eqn_address = {}
+        self.addresses = {}
         self.residuals = {}
 
     def get_count(self):
         return len(self.bus)
     
-    def register_eqn(self, dae):
+    def register_address(self, dae):
         """
         Register equations and variables for the generator
         """
@@ -44,7 +44,7 @@ class Generator:
         P_addr = dae.get_address("Bus", "AlgebEqn", "P_balance", bus_int)
         Q_addr = dae.get_address("Bus", "AlgebEqn", "Q_balance", bus_int)
         V_diff_addr = dae.get_address("Generator", "AlgebEqn", "V_diff")
-        Vm_addr = dae.get_address("Generator", "AlgebEqn", "Vm", bus_int)
+        Vm_addr = dae.get_address("Bus", "AlgebVar", "Vm", bus_int)
         Q_gen_addr = dae.get_address("Generator", "AlgebVar", "Q_gen")
 
         self.addresses.update(

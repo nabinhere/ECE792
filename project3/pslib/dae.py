@@ -2,16 +2,12 @@ import numpy as np
 
 class DAE:
     def __init__(self):
-        self.m = 0  # next available address
-        self.nvar = 0
-        self.eqn_address = {}
-        self.var_address = {}
 
         self.addresses = {}
         self.next_addresses = {}
 
 
-    def register_address(self, model_name: str, type_name: str, var_dict: dict[str, int], bus_int: list)-> None:
+    def register_address(self, model_name: str, type_name: str, var_dict: dict[str, int])-> None:
         """
         Register equation and variable addresses for a given model
 
@@ -60,7 +56,7 @@ class DAE:
         bus_int: list
             internal bus numbersfor the given variables
         """
-        addr_array = self.addressesp[model_name][type_name][name]
+        addr_array = self.addresses[model_name][type_name][name]
 
         # return entire array address if index is not provided
         if index is None:

@@ -1,22 +1,24 @@
-from pathlib import Path
-import pandas as pd
-import matplotlib.pyplot as plt
-import plotly.graph_objects as go
-import json
-from pslib.models import bus, generator, branch 
-from pslib import parsers
-from pslib.parsers import excel, json, column_to_obj
-from pslib.parsers import create_system_from_data, read_from_excel, create_system_from_file
-from pslib.parsers.excel import read_from_excel
-from pslib.plot import plot_bus_voltage, interactive_plot
+from pslib.dae import DAE
+from .parsers import create_system_from_file
 
+system = create_system_from_file("pslib/data/case3.xlsx", "xlsx")
+dae = DAE()
 
-current_dir = Path(__file__).parent
-parent_dir = current_dir.parent
-file_path = parent_dir/"data"/"case3.xlsx"
-system = create_system_from_file(file_path)
 system.bus.make_int_map()
 
-Ybus = system.makeYbus()
-print(Ybus)
+# First part of the initialization: register addresses
+system.bus.register_address(dae)
+system.branch.register_address(dae)
+system.gen.register_address(dae)
+
+# second part of the initialization: fetch addresses
+system.bus.fetch_address(dae, system)
+system.branch.fetch_address(dae, system)
+system.gen.fetch_address(dae, system)
+
+# Make Ybus to prepare for power flow
+system.makeYbus()
+
+
+
 

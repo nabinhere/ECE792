@@ -1,12 +1,13 @@
 import os
+import sys
 import pathlib
 import pandas as pd
 from .excel import read_from_excel
 from .json import load_data_from_json
-from pslib.system import PowerSystem
-from pslib.models.bus import Bus
-from pslib.models.branch import Branch
-from pslib.models.generator import Generator
+from ..system import PowerSystem
+from ..models.bus import Bus
+from ..models.branch import Branch
+from ..models.generator import Generator
 
 
 __all__ = ['excel', 'json']

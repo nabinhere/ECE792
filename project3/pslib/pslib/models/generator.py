@@ -30,7 +30,36 @@ class Generator:
         return len(self.bus)
     
     def register_eqn(self, dae):
-        pass
+        """
+        Register equations and variables for the generator
+        """
+        dae.register_address("Generator", "AlgebEqn", {"V_diff": self.get_count()})
+        dae.register_address("Generator", "AlgebVar", {"Q_gen": self.get_count()})
+
+    def fetch_address(self, dae, system):
+        """
+        Fetch equation and variable addresses for the generator
+        """
+        bus_int = system.bus.ext2int(self.bus)
+        P_addr = dae.get_address("Bus", "AlgebEqn", "P_balance", bus_int)
+        Q_addr = dae.get_address("Bus", "AlgebEqn", "Q_balance", bus_int)
+        V_diff_addr = dae.get_address("Generator", "AlgebEqn", "V_diff")
+        Vm_addr = dae.get_address("Generator", "AlgebEqn", "Vm", bus_int)
+        Q_gen_addr = dae.get_address("Generator", "AlgebVar", "Q_gen")
+
+        self.addresses.update(
+            {"AlgebEqn":{
+                "P_balance": P_addr,
+                "Q_balance": Q_addr,
+                "V_diff": V_diff_addr,
+            },
+            "AlgebVar": {
+                "Q_gen": Q_gen_addr,
+            }
+            }
+        )
+
+
     
     def fetch_eqn_address(self, dae, system):
         # get the internal bus number of the generator

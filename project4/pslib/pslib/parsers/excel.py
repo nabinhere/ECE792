@@ -19,6 +19,7 @@ def read_from_excel(path: str)->dict:
         - branch: DataFrame
             contains branch data
     """
+    path = path + ".xlsx"
     file_dict = pd.read_excel(path, sheet_name = None, 
                          header = 0)
     return file_dict

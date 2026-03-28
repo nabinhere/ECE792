@@ -45,18 +45,18 @@ class Branch:
         P_addr = dae.get_address("Bus", "AlgebEqn", "P_balance", bus_int)
         Q_addr = dae.get_address("Bus", "AlgebEqn", "Q_balance", bus_int)
 
-        self.eqn_address = {
+        self.addresses.update({
             "AlgebEqn": {
                 "P_balance": P_addr,
                 "Q_balance": Q_addr,
             }
-        }
+        })
 
         Va_addr = dae.get_address("Bus", "AlgebVar", "Va", bus_int)
         Vm_addr = dae.get_address("Bus", "AlgebVar", "Vm", bus_int)
 
         self.addresses.update({
-            "Algebvar": {"Va": Va_addr,
+            "AlgebVar": {"Va": Va_addr,
                          "Vm": Vm_addr,}
         })
 

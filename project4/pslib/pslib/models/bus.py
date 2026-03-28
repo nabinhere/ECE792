@@ -66,7 +66,7 @@ class Bus:
     def fetch_address(self, dae, system):
         # fetch variable and equation addresses for the buses
 
-        self.adresses = {
+        self.addresses = {
             "AlgebEqn": {
                 "P_balance": dae.get_address("Bus", "AlgebEqn", "P_balance"),
                 "Q_balance": dae.get_address("Bus", "AlgebEqn", "Q_balance"),
@@ -93,8 +93,8 @@ class Bus:
 
         self.values.update({
             "AlgebVar": {
-                "va": dae.get_var_values("AlgebVar", va_addr),
-                "vm": dae.get_var_values("AlgebVar", vm_addr),
+                "Va": dae.get_var_values("AlgebVar", va_addr),
+                "Vm": dae.get_var_values("AlgebVar", vm_addr),
                 "P_slack": dae.get_var_values("AlgebVar", p_slack_addr),
                 "Q_slack": dae.get_var_values("AlgebVar", q_slack_addr),
             }
@@ -113,7 +113,7 @@ class Bus:
         Vm = self.values["AlgebVar"]["Vm"]
 
         # Make a mask vector to identify the slack bus (es)
-        slack_mask = (self.bus_type==3)
+        slack_mask = (self.type==3)
 
         # These two are the unknown variables whose values are provided by 'fsolve'
         P_slack = self.values["AlgebVar"]["P_slack"]

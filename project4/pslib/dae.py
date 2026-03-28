@@ -5,12 +5,12 @@ class DAE:
         self.addresses = {}
         self.next_addresses = {}
 
-        self.g = {}
-        self.y = {}
+        self.g = np.array([])
+        self.y = np.array([])
 
     def initialize_arrays(self):
-         self.g = np.array(self.next_addresses["AlgebEqn"])
-         self.y = np.array(self.next_addresses["AlgebVar"])
+         self.g = np.zeros(self.next_addresses["AlgebEqn"])
+         self.y = np.zeros(self.next_addresses["AlgebVar"])
 
     def register_address(self, model_name: str, type_name: str, var_dict: dict[str, int])-> None:
         """
@@ -74,6 +74,12 @@ class DAE:
              return addr_array[index]
         
         raise ValueError(f"Index must be integer, list, range, or numpy array. Got {type(index)}.")
+    
+    def get_var_values(self, var_type: str, var_addr: int):
+         if var_type == "AlgebVar":
+              return self.y[var_addr]
+         else:
+              raise ValueError(f"Invalid type name {var_type}")
     
     def system_residuals(y0):
          """

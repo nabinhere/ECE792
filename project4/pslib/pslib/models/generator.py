@@ -49,6 +49,7 @@ class Generator:
         V_diff_addr = dae.get_address("Generator", "AlgebEqn", "V_diff")
         Vm_addr = dae.get_address("Bus", "AlgebVar", "Vm", bus_int)
         Q_gen_addr = dae.get_address("Generator", "AlgebVar", "Q_gen")
+        Va_addr = dae.get_address("Bus", "AlgebVar", "Va", bus_int)
 
         self.addresses.update(
             {"AlgebEqn":{
@@ -58,12 +59,13 @@ class Generator:
             },
             "AlgebVar": {
                 "Q_gen": Q_gen_addr,
+                "Vm": Vm_addr,
+                "Va": Va_addr,
             }
             }
         )
 
 
-    
     def fetch_eqn_address(self, dae, system):
         # get the internal bus number of the generator
         bus_int = system.bus.ext2int(self.bus)
@@ -82,12 +84,12 @@ class Generator:
         """
         Fetch values for the generator
         """
-        va_addr = self.addresses["AlgebVar"]["Va"]
+        Q_gen_addr = self.addresses["AlgebVar"]["Va"]
         vm_addr = self.addresses["AlgebVar"]["Vm"]
 
         self.values.update({
         "AlgebVar": {
-            "Va": dae.get_var_values("AlgebVar", va_addr),
+            "Q_gen": dae.get_var_values("AlgebVar", Q_gen_addr),
             "Vm": dae.get_var_values("AlgebVar", vm_addr),
         }
         })

@@ -17,6 +17,8 @@ class Branch:
 
         self.addresses = {}
         self.eqn_residuals = {}
+
+        self.values = {}
         
     def get_count(self):
         return len(self.fbus)
@@ -34,18 +36,6 @@ class Branch:
         """
         Fetch DAE equation addresses for the given system
         """
-        # fbus_int = system.bus.ext2int(self.fbus)
-        # tbus_int = system.bus.ext2int(self.tbus)
-
-        # P_address_fbus  = dae.get_eqn_address("Bus", "Algeb", "P_balance", fbus_int)
-        # P_address_tbus  = dae.get_eqn_address("Bus", "Algeb", "P_balance", tbus_int)
-        # Q_address_tbus  = dae.get_eqn_address("Bus", "Algeb", "Q_balance", tbus_int)
-        # Q_address_fbus  = dae.get_eqn_address("Bus", "Algeb", "Q_balance", fbus_int)
-        # self.eqn_address = {"P_balance_fbus": P_address_fbus,
-        #                     "P_balance_tbus": P_address_tbus,
-        #                     "Q_balance_fbus": Q_address_fbus,
-        #                     "Q_balance_tbus": Q_address_tbus} 
-        # return self.eqn_address
 
         bus_int = list(range(system.bus.get_count()))
 
@@ -65,4 +55,18 @@ class Branch:
         self.addresses.update({
             "Algebvar": {"Va": Va_addr,
                          "Vm": Vm_addr,}
+        })
+
+    def fetch_values(self, dae):
+        """
+        Fetch values for branches
+        """
+        va_addr = self.addresses["AlgebVar"]["Va"]
+        vm_addr = self.addresses["AlgebVar"]["Vm"]
+
+        self.values.update({
+            "AlgebVar": {
+                "Va": dae.get_var_values("AlgebVar", va_addr),
+                "Vm": dae.get_var_values("AlgebVar", vm_addr),
+            }
         })

@@ -25,6 +25,7 @@ class Generator:
 
         self.addresses = {}
         self.residuals = {}
+        self.values = {}
 
     def get_count(self):
         return len(self.bus)
@@ -74,3 +75,17 @@ class Generator:
     def residual(self, x):
         self.eqn_residuals = {"P_balance": self.Pg,
                               "Q_balance": self.Qg}
+        
+    def fetch_values(self,dae):
+        """
+        Fetch values for the generator
+        """
+        va_addr = self.addresses["AlgebVar"]["Va"]
+        vm_addr = self.addresses["AlgebVar"]["Vm"]
+
+        self.values.update({
+        "AlgebVar": {
+            "Va": dae.get_var_values("AlgebVar", va_addr),
+            "Vm": dae.get_var_values("AlgebVar", vm_addr),
+        }
+        })

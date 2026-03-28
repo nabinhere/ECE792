@@ -20,7 +20,8 @@ class Bus:
         self._int_map = {}
         self.ext_numbers = bus_i
 
-        self.eqn_address = {}
+        self.addresses = {}
+        self.values = {}
     
     def get_count(self):
         return len(self.bus_i)
@@ -79,3 +80,23 @@ class Bus:
                 "Q_slack": dae.get_address("Bus", "AlgebVar", "Q_slack"),
             },
         }
+
+    # TODO: Consider refactoring to reduce the boilerplate code
+    def fetch_values(self, dae):
+        """
+        Fetch values for buses
+        """
+        vm_addr = self.addresses["AlgebVar"]["Vm"]
+        va_addr = self.addresses["AlgebVar"]["Va"]
+        p_slack_addr = self.addresses["AlgebVar"]["P_slack"]
+        q_slack_addr = self.addresses["AlgebVar"]["Q_slack"]   
+
+        self.values.update({
+            "AlgebVar": {
+                "va": dae.get_var_values("AlgebVar", va_addr),
+                "vm": dae.get_var_values("AlgebVar", vm_addr),
+                "P_slack": dae.get_var_values("AlgebVar", p_slack_addr),
+                "Q_slack": dae.get_var_values("AlgebVar", q_slack_addr),
+            }
+        }) 
+

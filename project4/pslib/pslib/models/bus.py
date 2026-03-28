@@ -122,8 +122,9 @@ class Bus:
         # calculate the net power consumption at each bus
         # P_net = P_load - P_slack (at the proper locations!)
 
-        P_net = self.Pd
-        Q_net = self.Qd
+        # net power consumptions
+        P_net = np.array(self.Pd)
+        Q_net = np.array(self.Qd)
         P_net[slack_mask] = P_net[slack_mask] - P_slack
         Q_net[slack_mask] = Q_net[slack_mask] - Q_slack
 

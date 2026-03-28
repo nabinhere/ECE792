@@ -1,3 +1,5 @@
+import numpy as np
+
 class Generator:
     def __init__(self, bus, Pg, Qg, Qmax, Qmin, Vg, mBase, status, Pmax, Pmin, Pc1, Pc2,
                    Qc1min, Qc1max, Qc2min, Qc2max, ramp_agc, ramp_10, ramp_30, ramp_q, apf):
@@ -6,7 +8,7 @@ class Generator:
         self.Qg = Qg
         self.Qmax = Qmax
         self.Qmin = Qmin
-        self.Vg = Vg
+        self.Vg = np.array(Vg)
         self.mBase = mBase
         self.status = status
         self.Pmax = Pmax
@@ -88,4 +90,19 @@ class Generator:
             "Va": dae.get_var_values("AlgebVar", va_addr),
             "Vm": dae.get_var_values("AlgebVar", vm_addr),
         }
+        })
+
+    def calc_g(self, system):
+        """
+        Calculate the residual for the generator
+        """
+
+        Vm = self.values["AlgebVar"]["Vm"]
+
+        self.values.update({
+            "AlgebEqn": {
+                "P_balance": self.Pg,
+                "Q_balance": self.values["AlgebVar"]["Q_gen"],
+                "V_diff": Vm - self.Vg,
+            }
         })

@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class Branch:
     def __init__(self, fbus, tbus, r, x, b, rateA, rateB, rateC,
                  ratio, angle, status, angmin, angmax):
@@ -70,3 +73,24 @@ class Branch:
                 "Vm": dae.get_var_values("AlgebVar", vm_addr),
             }
         })
+
+    def calc_g(self, system):
+        """
+        Calculate contributions to the residual vector 'g'.
+        """
+        Va = self.values["AlgebVar"]["Va"]
+        Vm = self.values["AlgebVar"]["Vm"]
+
+        Ybus = system.Ybus
+
+        Vc = Vm * np.exp(1j*Va)
+        S = np.diag(Vc) @ np.conj(Ybus @ Vc)
+
+        self.values.update({
+            "AlgebEqn": {
+                "P_balance": -np.real(S),
+                "Q_balance": -np.imag(S),
+            }
+        })
+
+    

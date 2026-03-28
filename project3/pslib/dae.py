@@ -2,10 +2,15 @@ import numpy as np
 
 class DAE:
     def __init__(self):
-
         self.addresses = {}
         self.next_addresses = {}
 
+        self.g = {}
+        self.y = {}
+
+    def initialize_arrays(self):
+         self.g = np.array(self.next_addresses["AlgebEqn"])
+         self.y = np.array(self.next_addresses["AlgebVar"])
 
     def register_address(self, model_name: str, type_name: str, var_dict: dict[str, int])-> None:
         """
@@ -20,7 +25,7 @@ class DAE:
         var_dict: dict
             Dictionary variable names and their sizes
         bus_int: list
-            internal bus numbersfor the given variables
+            internal bus numbers for the given variables
         """
         # initialize a variable dictionary for a given model
         if model_name not in self.addresses:
@@ -69,3 +74,14 @@ class DAE:
              return addr_array[index]
         
         raise ValueError(f"Index must be integer, list, range, or numpy array. Got {type(index)}.")
+    
+    def system_residuals(y0):
+         """
+         Compute the residuals of the whole system model.
+
+         Parameters
+         --------------
+         y0: numpy array
+            Residuals of the system model having the same length as 'y0'.
+         """
+         pass

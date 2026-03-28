@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pslib"
+version  = "0.1.0"
+description= "Power System Analysis library"
+authors = [{name = "Nabindra Raj Shrestha"}]
+dependencies = []
+
+[tools.setuptools.packages.find]
+where = ["."
+]

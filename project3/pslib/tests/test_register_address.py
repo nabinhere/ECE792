@@ -23,7 +23,7 @@ def test_register_eqn_for_case3(dae):
 
     three_bus_system = create_system_from_data(data)
     three_bus_system.bus.make_int_map()
-    three_bus_system.bus.register_equations(dae)
+    three_bus_system.bus.register_address(dae)
 
     # check if equations are registered correctly
     assert "Bus" in dae.eqn_address
@@ -41,13 +41,13 @@ def test_get_eqn_address_for_case3(dae):
 
     three_bus_system = create_system_from_data(data)
     three_bus_system.bus.make_int_map()
-    three_bus_system.bus.register_equations(dae)
+    three_bus_system.bus.register_address(dae)
 
     # Test addresses for P_balance and Q_balance equations
-    assert dae.get_eqn_address("Bus", "Algeb", "P_balance", [0]) == [0]
-    assert dae.get_eqn_address("Bus", "Algeb", "Q_balance", [0]) == [3]
-    np.testing.assert_array_equal(dae.get_eqn_address("Bus", "Algeb", "P_balance", [0, 1, 2]), [0,1,2])
-    np.testing.assert_array_equal(dae.get_eqn_address("Bus", "Algeb", "Q_balance", [0, 1, 2]), [3, 4, 5])
+    assert dae.get_address("Bus", "AlgebEqn", "P_balance", [0]) == [0]
+    assert dae.get_address("Bus", "AlgebEqn", "Q_balance", [0]) == [3]
+    np.testing.assert_array_equal(dae.get_address("Bus", "AlgebEqn", "P_balance", [0, 1, 2]), [0,1,2])
+    np.testing.assert_array_equal(dae.get_address("Bus", "AlgebEqn", "Q_balance", [0, 1, 2]), [3, 4, 5])
 
     # Test fetch_eqn_address of generator
     np.testing.assert_array_equal(three_bus_system.gen.fetch_eqn_address(dae, three_bus_system)["P_balance"], [1])

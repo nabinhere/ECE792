@@ -1,2 +1,4 @@
 pslib/pslib/__pycache__/
 pslib/pslib/models/__pycache__/
+pslib/tests/__pycache__/
+pslib/pslib/parsers/__pycache__/

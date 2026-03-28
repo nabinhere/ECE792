@@ -100,3 +100,38 @@ class Bus:
             }
         }) 
 
+
+    def calc_g(self, system):
+        """
+        Calculate contributions to the residual vector 'g'
+        """
+        # TODO: the code below only considers load. 'Gs' and 'Bs' should be considered in the future for corectness.
+
+        # Note: the negative sign indicates power consumption (leaving)
+
+        Va = self.values["AlgebVar"]["Va"]
+        Vm = self.values["AlgebVar"]["Vm"]
+
+        # Make a mask vector to identify the slack bus (es)
+        slack_mask = (self.bus_type==3)
+
+        # These two are the unknown variables whose values are provided by 'fsolve'
+        P_slack = self.values["AlgebVar"]["P_slack"]
+        Q_slack = self.values["AlgebVar"]["Q_slack"]
+
+        # calculate the net power consumption at each bus
+        # P_net = P_load - P_slack (at the proper locations!)
+
+        P_net = self.Pd
+        Q_net = self.Qd
+        P_net[slack_mask] = P_net[slack_mask] - P_slack
+        Q_net[slack_mask] = Q_net[slack_mask] - Q_slack
+
+        self.values.update({
+            "AlgebEqn": {
+                "P_balance": -P_net,
+                "Q_balance": -Q_net,
+                "Va_diff": Va[slack_mask] - self.Va[slack_mask],
+                "Vm_diff": Vm[slack_mask] - self.Vm[slack_mask],
+            }
+        })

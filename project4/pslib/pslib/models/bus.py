@@ -61,15 +61,6 @@ class Bus:
                              "P_slack": self.type.count(3),
                              "Q_slack": self.type.count(3)})
         
-    
-    # def fetch_equation_address(self, dae, system):
-    #     bus_int = system.bus.ext2int(self.bus_i)
-    #     # get the P_balance and Q_balance equation addresses
-    #     P_address = dae.get_eqn_address("Bus", "AlgebEqn", "P_balance", bus_int)
-    #     Q_address = dae.get_eqn_address("Bus", "AlgebEqn", "Q_balance", bus_int)
-
-    #     self.eqn_address = {"P_balance": P_address,
-    #                         "Q_balance": Q_address}
         
     def fetch_address(self, dae, system):
         # fetch variable and equation addresses for the buses

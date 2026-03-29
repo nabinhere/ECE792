@@ -5,8 +5,8 @@ class Bus:
                  area, Vm, Va, baseKV, zone, Vmax, Vmin):
         self.bus_i = bus_i
         self.type = np.array(type)
-        self.Pd = Pd
-        self.Qd = Qd
+        self.Pd = np.array(Pd)
+        self.Qd = np.array(Qd)
         self.Gs = Gs
         self.Bs = Bs
         self.area = area

@@ -4,7 +4,7 @@ class Generator:
     def __init__(self, bus, Pg, Qg, Qmax, Qmin, Vg, mBase, status, Pmax, Pmin, Pc1, Pc2,
                    Qc1min, Qc1max, Qc2min, Qc2max, ramp_agc, ramp_10, ramp_30, ramp_q, apf):
         self.bus = bus
-        self.Pg = Pg
+        self.Pg = np.array(Pg)
         self.Qg = Qg
         self.Qmax = Qmax
         self.Qmin = Qmin
@@ -84,7 +84,7 @@ class Generator:
         """
         Fetch values for the generator
         """
-        Q_gen_addr = self.addresses["AlgebVar"]["Va"]
+        Q_gen_addr = self.addresses["AlgebVar"]["Q_gen"]
         vm_addr = self.addresses["AlgebVar"]["Vm"]
 
         self.values.update({

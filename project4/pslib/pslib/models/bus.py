@@ -4,14 +4,14 @@ class Bus:
     def __init__(self, bus_i, type, Pd, Qd, Gs, Bs,
                  area, Vm, Va, baseKV, zone, Vmax, Vmin):
         self.bus_i = bus_i
-        self.type = type
+        self.type = np.array(type)
         self.Pd = Pd
         self.Qd = Qd
         self.Gs = Gs
         self.Bs = Bs
         self.area = area
-        self.Vm = Vm
-        self.Va = Va
+        self.Vm = np.array(Vm)
+        self.Va = np.array(Va)
         self.baseKV = baseKV
         self.zone = zone
         self.Vmax = Vmax
@@ -51,16 +51,16 @@ class Bus:
         dae.register_address("Bus", "AlgebEqn", 
                          {"P_balance": self.get_count(),
                           "Q_balance": self.get_count(),
-                          "Vm_diff": self.type.count(3),
-                          "Va_diff": self.type.count(3)})
+                          "Vm_diff": np.count_nonzero(self.type==3),
+                          "Va_diff": np.count_nonzero(self.type==3)})
         
         # register variables
         dae.register_address("Bus",
                              "AlgebVar",
                              {"Va": self.get_count(),
                              "Vm": self.get_count(),
-                             "P_slack": self.type.count(3),
-                             "Q_slack": self.type.count(3)})
+                             "P_slack": np.count_nonzero(self.type==3),
+                             "Q_slack": np.count_nonzero(self.type==3)})
         
         
     def fetch_address(self, dae, system):

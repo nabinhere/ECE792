@@ -118,4 +118,4 @@ class Generator:
 
         dae.g[address["P_balance"]] += value["P_balance"]
         dae.g[address["Q_balance"]] += value["Q_balance"]
-        dae.g[address["v_diff"]] += value["v_diff"]
+        dae.g[address["V_diff"]] += value["V_diff"]

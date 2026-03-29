@@ -41,5 +41,8 @@ system.bus.merge_g(dae)
 system.branch.merge_g(dae)
 system.gen.merge_g(dae)
 
+print(type(dae.g))
+print(dae.g)
+
 
  

@@ -37,7 +37,9 @@ system.bus.calc_g(system)
 system.branch.calc_g(system)
 system.gen.calc_g(system)
 
-print(system.Ybus)
-print(system.bus.values)
+system.bus.merge_g(dae)
+system.branch.merge_g(dae)
+system.gen.merge_g(dae)
+
 
  

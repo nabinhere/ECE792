@@ -108,3 +108,14 @@ class Generator:
                 "V_diff": Vm - self.Vg,
             }
         })
+
+    def merge_g(self, dae):
+        """
+        Merge the generator's residual contributions to the global 'dae.g' array
+        """
+        address = self.addresses["AlgebEqn"]
+        value = self.values["AlgebEqn"]
+
+        dae.g[address["P_balance"]] += value["P_balance"]
+        dae.g[address["Q_balance"]] += value["Q_balance"]
+        dae.g[address["v_diff"]] += value["v_diff"]

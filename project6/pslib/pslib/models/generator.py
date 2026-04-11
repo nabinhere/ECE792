@@ -4,10 +4,10 @@ class Generator:
     def __init__(self, bus, Pg, Qg, Qmax, Qmin, Vg, mBase, status, Pmax, Pmin, Pc1, Pc2,
                    Qc1min, Qc1max, Qc2min, Qc2max, ramp_agc, ramp_10, ramp_30, ramp_q, apf):
         self.bus = bus
-        self.Pg = np.array(Pg)
-        self.Qg = Qg
-        self.Qmax = Qmax
-        self.Qmin = Qmin
+        self.Pg = np.array(Pg)     
+        self.Qg = np.array(Qg)                
+        self.Qmax = np.array(Qmax)
+        self.Qmin = np.array(Qmin)
         self.Vg = np.array(Vg)
         self.mBase = mBase
         self.status = status
@@ -103,7 +103,7 @@ class Generator:
 
         self.values.update({
             "AlgebEqn": {
-                "P_balance": self.Pg,
+                "P_balance": self.Pg / 100,
                 "Q_balance": self.values["AlgebVar"]["Q_gen"],
                 "V_diff": Vm - self.Vg,
             }

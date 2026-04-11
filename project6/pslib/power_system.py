@@ -27,7 +27,11 @@ system.makeYbus()
 dae.initialize_arrays()
 
 # properly initialize values
-y0 = np.array([0, 0, 0, 1.02, 1.0, 1.0, 0, 0, 0])
+y0 = np.array([0, 0, 0, 1.02, 1.0, 1.0, 0, 0, 0])      # initial values for 3-bus
+# y0 = np.concatenate([np.zeros(system.bus.get_count()),     # Va
+#                     np.ones(system.bus.get_count()),       # Vm
+#                     [0, 0],        # for the slack p and Q
+#                     np.zeros(system.gen.get_count())])    # for PV's Q
 
 def system_residuals(y, system, dae):
     dae.y[:] = y
@@ -49,9 +53,7 @@ def system_residuals(y, system, dae):
     return np.array(dae.g)
 
 sol, infodict, ier, mesg = fsolve(system_residuals, y0, args = (system, dae), full_output = True)
-print(mesg)
 print(sol)
-
-
-
- 
+print(infodict)
+print(ier)
+print(mesg)

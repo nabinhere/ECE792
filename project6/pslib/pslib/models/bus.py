@@ -5,8 +5,8 @@ class Bus:
                  area, Vm, Va, baseKV, zone, Vmax, Vmin):
         self.bus_i = bus_i
         self.type = np.array(type)
-        self.Pd = np.array(Pd)
-        self.Qd = np.array(Qd)
+        self.Pd = np.array(Pd)      
+        self.Qd = np.array(Qd)      
         self.Gs = Gs
         self.Bs = Bs
         self.area = area
@@ -123,8 +123,8 @@ class Bus:
         # P_net = P_load - P_slack (at the proper locations!)
 
         # net power consumptions
-        P_net = np.array(self.Pd)
-        Q_net = np.array(self.Qd)
+        P_net = np.array(self.Pd) / 100
+        Q_net = np.array(self.Qd) / 100
         P_net[slack_mask] = P_net[slack_mask] - P_slack
         Q_net[slack_mask] = Q_net[slack_mask] - Q_slack
 

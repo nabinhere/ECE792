@@ -1,93 +1,95 @@
 import numpy as np
+from typing import Dict, Union, List, Optional
+
 
 class DAE:
     def __init__(self):
-        self.addresses = {}
-        self.next_addresses = {}
+
+        # model -> type -> name -> array of addresses
+        self.addresses: Dict[str, Dict[str, Dict[str, List[int]]]] = {}
+        self.next_addresses: Dict[str, int] = {}
 
         self.g = np.array([])
         self.y = np.array([])
 
-    def initialize_arrays(self):
-         self.g = np.zeros(self.next_addresses["AlgebEqn"])
-         self.y = np.zeros(self.next_addresses["AlgebVar"])
-
-    def register_address(self, model_name: str, type_name: str, var_dict: dict[str, int])-> None:
+    def register_address(self, model_name: str, type_name: str, var_dict: Dict[str, int]) -> None:
         """
-        Register equation and variable addresses for a given model
+        Register addresses for any type.
 
         Parameters
-        --------------
-        model_name: str
-            Name of the model (e.g., Bus)
-        type_name: str
+        ----------
+        model_name : str
+            Name of the model (e.g., "Bus")
+        type_name : str
             Full type name (e.g., "AlgebEqn", "StateVar", "Observed")
-        var_dict: dict
-            Dictionary variable names and their sizes
-        bus_int: list
-            internal bus numbers for the given variables
+        var_dict : dict
+            Dictionary of variable names and their sizes
         """
-        # initialize a variable dictionary for a given model
         if model_name not in self.addresses:
             self.addresses[model_name] = {}
-        
-        # create a specified type of variable for a given model
         if type_name not in self.addresses[model_name]:
             self.addresses[model_name][type_name] = {}
 
-        # Initialize next_address for this type if it doesn't already exist
+        # Initialize next_address for this type if not exists
         if type_name not in self.next_addresses:
             self.next_addresses[type_name] = 0
 
-        # Assign variable/equation addresses
         for name, size in var_dict.items():
-                self.addresses[model_name][type_name][name] = np.arange(self.next_addresses[type_name],
-                                                                        self.next_addresses[type_name] + size)
-                self.next_addresses[type_name] += size
+            # Store continuous array of addresses using type-specific counter
+            self.addresses[model_name][type_name][name] = np.arange(
+                self.next_addresses[type_name],
+                self.next_addresses[type_name] + size
+            )
+            self.next_addresses[type_name] += size
 
-
-    def get_address(self, model_name: str, type_name: str, name: str, index: int | list[int] | range | np.ndarray = None):
+    def get_address(self, model_name: str, type_name: str, name: str,
+                   index: Optional[Union[int, List[int], range, np.ndarray]] = None) -> Union[np.ndarray, int, List[int]]:
         """
         Get the address of a type (equation, variable, etc.)
 
         Parameters
-        --------------
-        model_name: str
-            Name of the model (e.g., Bus)
-        type_name: str
-            Full type name (e.g., "AlgebEqn", "StateVar", "Observed")
-        var_dict: dict
-            Dictionary variable names and their sizes
-        bus_int: list
-            internal bus numbersfor the given variables
+        ----------
+        model_name : str
+            Name of the model (e.g., "Bus")
+        type_name : str
+            Name of the type (e.g., "AlgebEqn", "AlgebVar")
+        name : str
+            Name of the variable (e.g., "P_balance", "Q_balance")
+        index : int, list, range, or numpy array
+            0-based index of the variable. If None, all addresses are returned.
+
+        Returns
+        -------
+        addr_array : numpy array
+            Array of addresses
         """
+
         addr_array = self.addresses[model_name][type_name][name]
 
-        # return entire array address if index is not provided
         if index is None:
-             return addr_array
-        
-        if isinstance(index, (int, np.integer)):
-             return addr_array[index]
-        
-        if isinstance(index, (list, range, np.ndarray)):
-             return addr_array[index]
-        
-        raise ValueError(f"Index must be integer, list, range, or numpy array. Got {type(index)}.")
-    
-    def get_var_values(self, var_type: str, var_addr: int):
-         if var_type == "AlgebVar":
-              return self.y[var_addr]
-         else:
-              raise ValueError(f"Invalid type name {var_type}")
-    
-    def system_residuals(y0):
-         """
-         Compute the residuals of the whole system model.
+            return addr_array
 
-         Parameters
-         --------------
-         y0: numpy array
-            Residuals of the system model having the same length as 'y0'.
-         """
-         pass
+        if isinstance(index, (int, np.integer, list, range, np.ndarray)):
+            return addr_array[index]
+
+        raise ValueError(f"Index must be an integer, list, range, or numpy array. Got {type(index)}")
+
+    def initialize_arrays(self):
+        """
+        Initialize the arrays for the DAE.
+        """
+        # Check if the number of algebraic variables equal equations
+        if self.next_addresses["AlgebEqn"] != self.next_addresses["AlgebVar"]:
+            raise ValueError("# of algeb. eqn. != # of algeb. vars.")
+
+        self.g = np.zeros(self.next_addresses["AlgebEqn"])
+        self.y = np.zeros(self.next_addresses["AlgebVar"])
+
+    def get_var_values(self, type_name: str, index: np.ndarray) -> np.ndarray:
+        """
+        Get the values of a type (equation, variable, etc.)
+        """
+        if type_name == "AlgebVar":
+            return self.y[index]
+        else:
+            raise ValueError(f"Invalid type name: {type_name}")

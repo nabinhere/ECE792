@@ -1,3 +1,4 @@
+from scipy.sparse import csc_matrix, coo_matrix
 import numpy as np
 
 class PowerSystem:
@@ -6,31 +7,37 @@ class PowerSystem:
         self.branch = branch
         self.gen = gen
 
+        self.baseMVA = 100
+    
     def makeYbus(self):
+        """
+        Make the Ybus matrix.
+        """
+
+        # convert the external bus numbers to internal bus numbers
         fbus = self.bus.ext2int(self.branch.fbus)
         tbus = self.bus.ext2int(self.branch.tbus)
 
-        # convert to numpy arrays to enable vectorized operation
-        r = np.array(self.branch.r)
-        x = np.array(self.branch.x)
-        b = np.array(self.branch.b)
+        # get the number of buses
+        n_buses = self.bus.get_count()
 
-        # branch impedance and admittance
-        z = r + 1j*x
-        y = 1 / z
+        # create the vector of series admittances
+        y_series = 1 /(self.branch.r + 1j*self.branch.x)
+        # create the vector of shunt admittances
+        y_shunt = 1j* self.branch.b
 
-        n_bus = self.bus.get_count()    #number of buses
-        # initialize the Ybus matrix
-        Ybus = np.zeros((n_bus, n_bus), dtype=complex)
-        # off-diagonal elements
-        Ybus[fbus, tbus] = -y
-        Ybus[tbus, fbus] = -y
-        # diagonal elements
-        np.add.at(Ybus, (fbus, fbus), y + 1j*b/2)
-        np.add.at(Ybus, (tbus, tbus), y + 1j*b/2)
+        # create the row and column indices
+        row = np.hstack([fbus, tbus, fbus, tbus])
+        col = np.hstack([fbus, tbus, tbus, fbus])
 
-        self.Ybus = Ybus
+        # create the data vector
+        data = np.hstack([y_series+ y_shunt/2,
+                          y_series + y_shunt/2,
+                          -y_series,
+                          -y_series])
 
-        return self.Ybus
-
+        # create the admittance matrix in COO format
+        Y = coo_matrix((data, (row, col)), shape = (n_buses, n_buses))
         
+        # convert the admittance matrix to a sparse matrix in CSC format
+        self.Ybus = Y.tocsc()

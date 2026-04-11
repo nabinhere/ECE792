@@ -4,24 +4,25 @@ import numpy as np
 class Branch:
     def __init__(self, fbus, tbus, r, x, b, rateA, rateB, rateC,
                  ratio, angle, status, angmin, angmax):
-        self.fbus = fbus
-        self.tbus = tbus
-        self.r = r
-        self.x = x
-        self.b = b
-        self.rateA = rateA
-        self.rateB = rateB
-        self.rateC = rateC
-        self.ratio = ratio
-        self.angle = angle
-        self.status = status
-        self.angmin = angmin
-        self.angmax=  angmax
+            # ensure numeric fields are numpy arrays for elementwise ops
+            self.fbus = np.array(fbus, dtype=int)
+            self.tbus = np.array(tbus, dtype=int)
+            self.r = np.array(r, dtype=float)
+            self.x = np.array(x, dtype=float)
+            self.b = np.array(b, dtype=float)
+            self.rateA = np.array(rateA, dtype=float)
+            self.rateB = np.array(rateB, dtype=float)
+            self.rateC = np.array(rateC, dtype=float)
+            self.ratio = np.array(ratio, dtype=float)
+            self.angle = np.array(angle, dtype=float)
+            self.status = np.array(status, dtype=int)
+            self.angmin = np.array(angmin, dtype=float)
+            self.angmax = np.array(angmax, dtype=float)
 
-        self.addresses = {}
-        self.eqn_residuals = {}
+            self.addresses = {}
+            self.eqn_residuals = {}
 
-        self.values = {}
+            self.values = {}
         
     def get_count(self):
         return len(self.fbus)

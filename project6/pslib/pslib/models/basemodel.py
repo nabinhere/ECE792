@@ -64,6 +64,26 @@ class BaseModel:
             for v_name, addr in sa["AlgebVar"].items():
                 sv["AlgebVar"][v_name] = dae.get_var_values("AlgebVar", addr) 
     
+    def merge_g(self, dae):
+        """
+        Merge the residual contributions to the global 'dae.g' array.
+
+        This generic implementation works for all models by iterating through all equation types and 
+        names in self.addresses and adding the corresponding values to dae.g.
+        """
+        if "AlgebEqn" not in self.addresses:
+            return
+        if "AlgebEqn" not in self.values:
+            return
+        
+        address = self.addresses["AlgebEqn"]
+        value = self.values["AlgebEqn"]
+
+        # Iterate through all equation names
+        for eqn_name in address:
+            if eqn_name in value:
+                dae.g[address[eqn_name]] += value[eqn_name]
+    
     def resolve_incdices(self, system):
         """
         Resolve the indices of the variables

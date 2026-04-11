@@ -81,64 +81,6 @@ class Bus(BaseModel):
             }
         }
 
-    
-    def register_address(self, dae):
-        """
-        Register variables and equations for the buses
-        """
-        # register equations
-        dae.register_address("Bus", "AlgebEqn", 
-                         {"P_balance": self.get_count(),
-                          "Q_balance": self.get_count(),
-                          "Vm_diff": np.count_nonzero(self.type==3),
-                          "Va_diff": np.count_nonzero(self.type==3)})
-        
-        # register variables
-        dae.register_address("Bus",
-                             "AlgebVar",
-                             {"Va": self.get_count(),
-                             "Vm": self.get_count(),
-                             "P_slack": np.count_nonzero(self.type==3),
-                             "Q_slack": np.count_nonzero(self.type==3)})
-        
-        
-    def fetch_address(self, dae, system):
-        # fetch variable and equation addresses for the buses
-
-        self.addresses = {
-            "AlgebEqn": {
-                "P_balance": dae.get_address("Bus", "AlgebEqn", "P_balance"),
-                "Q_balance": dae.get_address("Bus", "AlgebEqn", "Q_balance"),
-                "Vm_diff": dae.get_address("Bus", "AlgebEqn", "Vm_diff"),
-                "Va_diff": dae.get_address("Bus", "AlgebEqn", "Va_diff"),
-            },
-            "AlgebVar": {
-                "Va": dae.get_address("Bus", "AlgebVar", "Va"),
-                "Vm": dae.get_address("Bus", "AlgebVar", "Vm"),
-                "P_slack": dae.get_address("Bus", "AlgebVar", "P_slack"),
-                "Q_slack": dae.get_address("Bus", "AlgebVar", "Q_slack"),
-            },
-        }
-
-    # TODO: Consider refactoring to reduce the boilerplate code
-    def fetch_values(self, dae):
-        """
-        Fetch values for buses
-        """
-        vm_addr = self.addresses["AlgebVar"]["Vm"]
-        va_addr = self.addresses["AlgebVar"]["Va"]
-        p_slack_addr = self.addresses["AlgebVar"]["P_slack"]
-        q_slack_addr = self.addresses["AlgebVar"]["Q_slack"]   
-
-        self.values.update({
-            "AlgebVar": {
-                "Va": dae.get_var_values("AlgebVar", va_addr),
-                "Vm": dae.get_var_values("AlgebVar", vm_addr),
-                "P_slack": dae.get_var_values("AlgebVar", p_slack_addr),
-                "Q_slack": dae.get_var_values("AlgebVar", q_slack_addr),
-            }
-        }) 
-
 
     def calc_g(self, system):
         """

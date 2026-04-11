@@ -30,16 +30,43 @@ class BaseModel:
             dae.register_address(self.__class__.__name__,
                                  type_name, name_to_size)
     
-    def fetch_address(self, dae):
+    def fetch_address(self, dae, system):
         """
-        Fetch the addresses of the variables in the model
+        Fetch the addresses of the variables in the model using metadata
         """
-        raise NotImplementedError
+        if not self.fetch_data:
+            return
+        
+        # Allow model to resolve any dynamic indices
+        self.resolve_indices(system)
+
+        self.addresses = {}
+        for type_name, var_info in self.fetch_data.items():
+            self.addresses[type_name] = {}
+            for dest_name, (src_model, src_name, index) in var_info.items():
+                self.addresses[type_name][dest_name] = dae.get_address(
+                    src_model, type_name, src_name, index
+                )
+    
+    def fetch_values(self, dae):
+        """
+        Fetch the values of the variables in the model
+        """
+        self.values = {}
+
+        # Give aliases for convenience
+        sa = self.addresses
+        sv = self.values
+
+        # Only fetch AlgebVar values as that's what DAE currently supports
+        if "AlgebVar" in sa:
+            sv["AlgebVar"] = { }
+            for v_name, addr in sa["AlgebVar"].items():
+                sv["AlgebVar"][v_name] = dae.get_var_values("AlgebVar", addr) 
     
     def resolve_incdices(self, system):
         """
         Resolve the indices of the variables
         """
         raise NotImplementedError
-    
     

@@ -81,12 +81,12 @@ class Generator(BaseModel):
         Calculate the residual for the generator
         """
 
-        Vm = self.values["AlgebVar"]["Vm"]
+        V = self.values["AlgebVar"]["V"]
 
         self.values.update({
             "AlgebEqn": {
                 "P_balance": self.Pg / 100,
                 "Q_balance": self.values["AlgebVar"]["Q_gen"],
-                "V_diff": Vm - self.Vg,
+                "V_diff": V - self.Vg,
             }
         })

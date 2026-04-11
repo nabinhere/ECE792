@@ -88,5 +88,5 @@ class BaseModel:
         """
         Resolve the indices of the variables
         """
-        raise NotImplementedError
+        pass
     

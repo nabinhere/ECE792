@@ -74,7 +74,7 @@ class Generator(BaseModel):
                 src_model, src_name, _ = fd[type_name][dest_name]
                 if src_model == "Bus":
                     fd[type_name][dest_name] = (src_model, src_name, bus_int)
-                    
+
     
     def calc_g(self, system):
         """
@@ -90,14 +90,3 @@ class Generator(BaseModel):
                 "V_diff": Vm - self.Vg,
             }
         })
-
-    def merge_g(self, dae):
-        """
-        Merge the generator's residual contributions to the global 'dae.g' array
-        """
-        address = self.addresses["AlgebEqn"]
-        value = self.values["AlgebEqn"]
-
-        dae.g[address["P_balance"]] += value["P_balance"]
-        dae.g[address["Q_balance"]] += value["Q_balance"]
-        dae.g[address["V_diff"]] += value["V_diff"]

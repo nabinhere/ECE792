@@ -118,15 +118,3 @@ class Bus(BaseModel):
             }
         })
         
-    def merge_g(self, dae):
-        """
-        Merge the residual contributions to the global 'dae.g' array.
-        """
-
-        address = self.addresses["AlgebEqn"]
-        value = self.values["AlgebEqn"]
-
-        dae.g[address["P_balance"]] += value["P_balance"]
-        dae.g[address["Q_balance"]] += value["Q_balance"]
-        dae.g[address["Va_diff"]] += value["Va_diff"]
-        dae.g[address["Vm_diff"]] += value["Vm_diff"]

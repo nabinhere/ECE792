@@ -33,67 +33,32 @@ class Generator(BaseModel):
     def get_count(self):
         return len(self.bus)
     
-    def register_address(self, dae):
+    
+    def set_metadata(self):
         """
-        Register equations and variables for the generator
+        Set metadata for the generator model
         """
-        dae.register_address("Generator", "AlgebEqn", {"V_diff": self.get_count()})
-        dae.register_address("Generator", "AlgebVar", {"Q_gen": self.get_count()})
-
-    def fetch_address(self, dae, system):
-        """
-        Fetch equation and variable addresses for the generator
-        """
-        bus_int = system.bus.ext2int(self.bus)
-        P_addr = dae.get_address("Bus", "AlgebEqn", "P_balance", bus_int)
-        Q_addr = dae.get_address("Bus", "AlgebEqn", "Q_balance", bus_int)
-        V_diff_addr = dae.get_address("Generator", "AlgebEqn", "V_diff")
-        Vm_addr = dae.get_address("Bus", "AlgebVar", "Vm", bus_int)
-        Q_gen_addr = dae.get_address("Generator", "AlgebVar", "Q_gen")
-        Va_addr = dae.get_address("Bus", "AlgebVar", "Va", bus_int)
-
-        self.addresses.update(
-            {"AlgebEqn":{
-                "P_balance": P_addr,
-                "Q_balance": Q_addr,
-                "V_diff": V_diff_addr,
+        self.reg_data = {
+            "AlgebEqn": {
+                "V_diff": self.get_count()
             },
             "AlgebVar": {
-                "Q_gen": Q_gen_addr,
-                "Vm": Vm_addr,
-                "Va": Va_addr,
+                "Q_gen": self.get_count()
             }
-            }
-        )
-
-
-    def fetch_eqn_address(self, dae, system):
-        # get the internal bus number of the generator
-        bus_int = system.bus.ext2int(self.bus)
-        # get the P_balance and Q_balance equation addresses
-        P_address = dae.get_eqn_address("Bus", "Algeb", "P_balance", bus_int)
-        Q_address = dae.get_eqn_address("Bus", "Algeb", "Q_balance", bus_int)
-        self.eqn_address = {"P_balance": P_address,
-                            "Q_balance": Q_address}
-        return self.eqn_address
-        
-    def residual(self, x):
-        self.eqn_residuals = {"P_balance": self.Pg,
-                              "Q_balance": self.Qg}
-        
-    def fetch_values(self,dae):
-        """
-        Fetch values for the generator
-        """
-        Q_gen_addr = self.addresses["AlgebVar"]["Q_gen"]
-        vm_addr = self.addresses["AlgebVar"]["Vm"]
-
-        self.values.update({
-        "AlgebVar": {
-            "Q_gen": dae.get_var_values("AlgebVar", Q_gen_addr),
-            "Vm": dae.get_var_values("AlgebVar", vm_addr),
         }
-        })
+
+        self.fetch_data = {
+            "AlgebEqn": {
+                "P_balance": ("Bus", "P_balance", None),
+                "Q_balance": ("Bus", "Q_balance", None),
+                "V_diff": ("Generator", "V_diff", None),
+            },
+            "AlgebVar": {
+                "Q_gen": ("Generator", "Q_gen", None),
+                "V": ("Bus", "Vm", None)
+            }
+        }
+
 
     def calc_g(self, system):
         """

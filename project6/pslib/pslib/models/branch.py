@@ -27,53 +27,26 @@ class Branch(BaseModel):
     def get_count(self):
         return len(self.fbus)
     
-    def register_address(self, dae):
-        """
-        Register the equations for branches.
+    def set_metadata(self):
+         """
+         Set the metadata for the branch
 
-        Branches use equations from the Bus model.
-        No new equations created by branches
-        """
-        pass
+         self.reg_data is not required because branches use equations from the Bus model.
+         No new equations created by branches
+         """
+
+         self.fetch_data = {
+              "AlgebEqn": {
+                   "P_balance": ("Bus", "P_balance", None),
+                   "Q_balance": ("Bus", "Q_balance", None),
+              },
+              "AlgebVar": {
+                   "Va": ("Bus", "Va", None),
+                   "Vm": ("Bus", "Vm", None),
+              }
+         }
     
-    def fetch_address(self, dae, system):
-        """
-        Fetch DAE equation addresses for the given system
-        """
-
-        bus_int = list(range(system.bus.get_count()))
-
-        P_addr = dae.get_address("Bus", "AlgebEqn", "P_balance", bus_int)
-        Q_addr = dae.get_address("Bus", "AlgebEqn", "Q_balance", bus_int)
-
-        self.addresses.update({
-            "AlgebEqn": {
-                "P_balance": P_addr,
-                "Q_balance": Q_addr,
-            }
-        })
-
-        Va_addr = dae.get_address("Bus", "AlgebVar", "Va", bus_int)
-        Vm_addr = dae.get_address("Bus", "AlgebVar", "Vm", bus_int)
-
-        self.addresses.update({
-            "AlgebVar": {"Va": Va_addr,
-                         "Vm": Vm_addr,}
-        })
-
-    def fetch_values(self, dae):
-        """
-        Fetch values for branches
-        """
-        va_addr = self.addresses["AlgebVar"]["Va"]
-        vm_addr = self.addresses["AlgebVar"]["Vm"]
-
-        self.values.update({
-            "AlgebVar": {
-                "Va": dae.get_var_values("AlgebVar", va_addr),
-                "Vm": dae.get_var_values("AlgebVar", vm_addr),
-            }
-        })
+    
 
     def calc_g(self, system):
         """

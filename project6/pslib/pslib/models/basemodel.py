@@ -84,7 +84,7 @@ class BaseModel:
             if eqn_name in value:
                 dae.g[address[eqn_name]] += value[eqn_name]
     
-    def resolve_incdices(self, system):
+    def resolve_indices(self, system):
         """
         Resolve the indices of the variables
         """

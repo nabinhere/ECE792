@@ -27,7 +27,7 @@ class Generator(BaseModel):
         self.ramp_q = ramp_q
         self.apf = apf
 
-        self.residuals = {}
+        self.set_metadata()
 
 
     def get_count(self):

@@ -21,7 +21,7 @@ class Branch(BaseModel):
             self.angmin = np.array(angmin, dtype=float)
             self.angmax = np.array(angmax, dtype=float)
 
-            self.eqn_residuals = {}
+            self.set_metadata()
 
         
     def get_count(self):

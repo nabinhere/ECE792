@@ -22,6 +22,8 @@ class Bus(BaseModel):
         self._int_map = {}
         self.ext_numbers = bus_i
 
+        self.set_metadata()
+
     
     def get_count(self):
         return len(self.bus_i)

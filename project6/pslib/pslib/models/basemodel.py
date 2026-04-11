@@ -4,8 +4,14 @@ class BaseModel:
     """
 
     def __init__(self):
+        self.reg_data = {}
+        self.fetch_data = {}
+        
         self.addresses = {}
         self.values = {}
+
+        # Automatically get model name from class name
+        self.model_name = self.__class__.__name__
 
     def get_count(self):
         """

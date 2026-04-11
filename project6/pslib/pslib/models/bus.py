@@ -43,6 +43,45 @@ class Bus(BaseModel):
         for i, ext_number in enumerate(self.ext_numbers):
             self._int_map[ext_number] = i
 
+    
+    def set_metadata(self):
+        """
+        Set the metadata for the bus.
+        """
+
+        self.reg_data = {
+            "AlgebEqn": {
+                "P_balance": self.get_count(),
+                "Q_balance": self.get_count(),
+                "Va_diff": np.sum(self.type == 3),
+                "Vm_diff": np.sum(self.type == 3)
+            },
+            "AlgebVar": {
+                "Va": self.get_count(),
+                "Vm": self.get_count(),
+                "P_slack": np.sum(self.type==3),
+                "Q_slack": np.sum(self.type==3),
+            }
+
+        }
+
+        # Define fetch metadata
+        self.fetch_data = {
+            "AlgebEqn": {
+                "P_balance": ("Bus", "P_balance", None),
+                "Q_balance": ("Bus", "Q_balance", None),
+                "Va_diff": ("Bus", "Va_diff", None),
+                "Vm_diff": ("Bus", "Vm_diff", None),
+            },
+            "AlgebVar": {
+                "Va": ("Bus", "Va", None),
+                "Vm": ("Bus", "Vm", None),
+                "P_slack": ("Bus", "P_slack", None),
+                "Q_slack": ("Bus", "Q_slack", None),
+            }
+        }
+
+    
     def register_address(self, dae):
         """
         Register variables and equations for the buses

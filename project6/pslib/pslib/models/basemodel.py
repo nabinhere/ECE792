@@ -23,10 +23,23 @@ class BaseModel:
         """
         Register the addresses of the variables in the model
         """
-        raise NotImplementedError
+        if not self.reg_data:
+            return
+        
+        for type_name, name_to_size in self.reg_data.items():
+            dae.register_address(self.__class__.__name__,
+                                 type_name, name_to_size)
     
     def fetch_address(self, dae):
         """
         Fetch the addresses of the variables in the model
         """
         raise NotImplementedError
+    
+    def resolve_incdices(self, system):
+        """
+        Resolve the indices of the variables
+        """
+        raise NotImplementedError
+    
+    

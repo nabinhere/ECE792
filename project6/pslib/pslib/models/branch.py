@@ -46,7 +46,6 @@ class Branch(BaseModel):
               }
          }
     
-    
 
     def calc_g(self, system):
         """

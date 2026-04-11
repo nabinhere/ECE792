@@ -60,6 +60,22 @@ class Generator(BaseModel):
         }
 
 
+    def resolve_indices(self, system):
+        """
+        Resolve indices for fetch_data.
+        """
+        # Update all Bus indices
+        bus_int = system.bus.ext2int(self.bus)
+
+        # Give it an alias for convenience
+        fd = self.fetch_data
+        for type_name in fd:
+            for dest_name in fd[type_name]:
+                src_model, src_name, _ = fd[type_name][dest_name]
+                if src_model == "Bus":
+                    fd[type_name][dest_name] = (src_model, src_name, bus_int)
+                    
+    
     def calc_g(self, system):
         """
         Calculate the residual for the generator

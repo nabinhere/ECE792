@@ -1,8 +1,10 @@
 import numpy as np
+from pslib.models.basemodel import BaseModel
 
-class Generator:
+class Generator(BaseModel):
     def __init__(self, bus, Pg, Qg, Qmax, Qmin, Vg, mBase, status, Pmax, Pmin, Pc1, Pc2,
                    Qc1min, Qc1max, Qc2min, Qc2max, ramp_agc, ramp_10, ramp_30, ramp_q, apf):
+        super().__init__()      # call the constructor of the base class
         self.bus = bus
         self.Pg = np.array(Pg)     
         self.Qg = np.array(Qg)                
@@ -25,9 +27,8 @@ class Generator:
         self.ramp_q = ramp_q
         self.apf = apf
 
-        self.addresses = {}
         self.residuals = {}
-        self.values = {}
+
 
     def get_count(self):
         return len(self.bus)

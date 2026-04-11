@@ -1,9 +1,11 @@
 import numpy as np
+from pslib.models.basemodel import BaseModel
 
 
-class Branch:
+class Branch(BaseModel):
     def __init__(self, fbus, tbus, r, x, b, rateA, rateB, rateC,
                  ratio, angle, status, angmin, angmax):
+            super().__init__()      # call the constructor of the base class
             # ensure numeric fields are numpy arrays for elementwise ops
             self.fbus = np.array(fbus, dtype=int)
             self.tbus = np.array(tbus, dtype=int)
@@ -19,10 +21,8 @@ class Branch:
             self.angmin = np.array(angmin, dtype=float)
             self.angmax = np.array(angmax, dtype=float)
 
-            self.addresses = {}
             self.eqn_residuals = {}
 
-            self.values = {}
         
     def get_count(self):
         return len(self.fbus)

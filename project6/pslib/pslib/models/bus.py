@@ -1,8 +1,10 @@
 import numpy as np
+from pslib.models.basemodel import BaseModel
 
-class Bus:
+class Bus(BaseModel):
     def __init__(self, bus_i, type, Pd, Qd, Gs, Bs,
                  area, Vm, Va, baseKV, zone, Vmax, Vmin):
+        super().__init__()      # call the constructor of the base class
         self.bus_i = bus_i
         self.type = np.array(type)
         self.Pd = np.array(Pd)      
@@ -20,8 +22,6 @@ class Bus:
         self._int_map = {}
         self.ext_numbers = bus_i
 
-        self.addresses = {}
-        self.values = {}
     
     def get_count(self):
         return len(self.bus_i)
